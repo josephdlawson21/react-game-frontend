@@ -5,23 +5,40 @@ import './App.css';
 class App extends Component {
 
   state = {
-    left:'0px',
+    left:'50px',
     right:'0px',
-    top:'',
-    bottom:''
+    top:'0px',
+    bottom:'0px'
   }
 
-  onLeft = () => {
-    this.setState({
-      left: `${parseInt(this.state.left) + 1}px`
-    },() => console.log(window))
-    // console.log('onLeft works')
+  onRight = (event) => {
+    if(event.key === 'd'){
+      this.setState({
+        left: `${parseInt(this.state.left) + 1}px`
+      },() => console.log(window))
+    }else if(event.key === 'a'){
+      this.setState({
+        left: `${parseInt(this.state.left) - 1}px`
+      },() => console.log(window))
+    }else if(event.key === 'w'){
+      this.setState({
+        top: `${parseInt(this.state.top) + 1}px`
+      },() => console.log(window))
+    }
+  }
+
+  onLeft = (event) => {
+    if(event.key === 'a'){
+      this.setState({
+        left: `${parseInt(this.state.left) - 1}px`
+      },() => console.log(window))
+    }
   }
 
   render() {
     return (
       <div className="App">
-        <Block onLeft={this.onLeft} right={this.state.right} left={this.state.left}/>
+        <Block onLeft={this.onLeft} onRight={this.onRight} right={this.state.right} left={this.state.left}/>
       </div>
     );
   }
@@ -29,7 +46,7 @@ class App extends Component {
 
 class Block extends React.Component {
   componentDidMount(){
-    window.addEventListener('keypress', this.props.onLeft)
+    window.addEventListener('keypress', this.props.onRight)
   }
   render(){
       let style = {
@@ -41,7 +58,7 @@ class Block extends React.Component {
         backgroundColor: 'red'
       }
       return(
-        <div onClick={this.props.onLeft} style={style}/>
+        <div onClick={this.props.onRight} style={style}/>
       )
     }
   }
