@@ -7,9 +7,13 @@
   width: 500px;
 }
 
-.Game {
+#canvas {
   background-color: grey;
-  height: 500px;
-  width: 500px;
+  /* height: 500px;
+  width: 500px; */
   /* margin-left: 33%; */
+}
+
+.imgHider {
+  visibility: hidden;
 }
