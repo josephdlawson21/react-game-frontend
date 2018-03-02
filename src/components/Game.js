@@ -20,10 +20,10 @@ class Game extends React.Component {
   state = {
     context: null,
     heroXy: [],
-    coins: [[6,5],[5,5],[4,5]],
+    coins: [],
     map: {},
     score: 0,
-    enemyXY: [9,4]
+    ghostXy: [9,4]
   }
 
   checkCollision = (col, row) => {
@@ -39,10 +39,16 @@ class Game extends React.Component {
       this.setState({
         coins: newCoins,
         score: this.state.score + 10
-      },() => console.log(this.state.score))
+      })
       return true
-
-    } else {
+    } else if ((this.state.ghostXy[0] === col) && (this.state.ghostXy[1] === row)) {
+      console.log("ded");
+      this.setState({
+        heroXy: [0,9],
+        score: 0,
+        coins: [[6,5],[5,5],[4,5]]
+      });
+    }else {
       return true
     };
   }
@@ -64,6 +70,10 @@ class Game extends React.Component {
         }
         if (this.state.heroXy[0] == 9 && this.state.heroXy[1] === 0) {
           console.log("winner");
+          this.setState({
+            heroXy: [0,9],
+            coins: [[6,5],[5,5],[4,5]]
+          });
         }
         break;
       case 'a':
@@ -81,6 +91,10 @@ class Game extends React.Component {
         }
         if (this.state.heroXy[0] == 9 && this.state.heroXy[1] === 0) {
           console.log("winner");
+          this.setState({
+            heroXy: [0,9],
+            coins: [[6,5],[5,5],[4,5]]
+          });
         }
         break;
     }
@@ -93,6 +107,8 @@ class Game extends React.Component {
       start: [0,9],
       cols: 10,
       rows: 10,
+      coins: [[6,5],[5,5],[4,5]],
+      ghosts: [],
       tsize: 60,
       tiles: [
         3,2,3,2,3,2,3,1,1,5,
@@ -112,25 +128,26 @@ class Game extends React.Component {
     }
     this.setState({
       map: map,
-      heroXy: [map.start[0], map.start[1]]
+      heroXy: [map.start[0], map.start[1]],
+      coins: map.coins
     });
 
     ///////// set interval for ghost //////////
     let direction;
     setInterval(()=>{
-      if(this.state.enemyXY[0] === 0){
+      if(this.state.ghostXy[0] === 0){
         direction = true
-      }else if (this.state.enemyXY[0] === 9){
+      }else if (this.state.ghostXy[0] === 9){
         direction = false
       }
 
       if(direction){
         this.setState({
-          enemyXY: [(this.state.enemyXY[0] + 1), 4]
+          ghostXy: [(this.state.ghostXy[0] + 1), 4]
         })
       } else {
         this.setState({
-          enemyXY: [(this.state.enemyXY[0] - 1), 4]
+          ghostXy: [(this.state.ghostXy[0] - 1), 4]
         })
       }
     }, 300)
@@ -295,15 +312,23 @@ class Game extends React.Component {
     // Coin(110,110,ctx)
 
     this.state.coins.forEach((coin)=> Coin(coin[0], coin[1], ctx, this.state.map))
-    ////////////////////////////////// Make Enemy /////////////////////////
 
-    Enemy(this.state.map, this.state.enemyXY, ctx)
 
 
     ////////////////////////////////// create Hero //////////////////////
     Hero(this.state.map, this.state.heroXy, ctx)
     window.addEventListener('keypress', this.moveHero)
 
+    ////////////////////////////////// Make Enemy /////////////////////////
+    Enemy(this.state.map, this.state.ghostXy, ctx)
+    if ((this.state.ghostXy[0] === (this.state.heroXy[0])) && (this.state.ghostXy[1] === this.state.heroXy[1])) {
+      console.log("ghost got ya")
+      this.setState({
+        heroXy: [0,9],
+        score: 0,
+        coins: [[6,5],[5,5],[4,5]]
+      });
+    }
 
 
     requestAnimationFrame(() => {this.update()})
