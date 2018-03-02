@@ -23,11 +23,65 @@ class Game extends React.Component {
     coins: [],
     map: {},
     score: 0,
-    ghostXy: [9,4]
+    ghostsH: [],
+    ghostsV: []
+  }
+
+  moveGhosts = () => {
+    let directionV;
+    let directionH;
+    // setInterval(()=>{
+    //   if(this.state.ghostXy[0] === 0){
+    //     directionV = true
+    //   }else if (this.state.ghostXy[0] === 9){
+    //     directionV = false
+    //   }
+    //
+    //   if(directionV){
+    //     this.setState({
+    //       ghostXy: [(this.state.ghostXy[0] + 1), 4]
+    //     })
+    //   } else {
+    //     this.setState({
+    //       ghostXy: [(this.state.ghostXy[0] - 1), 4]
+    //     })
+    //   }
+    // }, 100)
+    console.log(this.state);
+    setInterval(()=>{
+      this.state.ghostsH.forEach((ghost) => {
+      //// iterate through horizontal ghosts
+
+        /////// determine direction
+        if(ghost[0] === 0){
+          directionH = true
+        }else if (ghost[0] === 9){
+          directionH = false
+        }
+        //////////finding the ghost coordinaated and updating
+        let ghostIndex = this.state.ghostsH.indexOf(ghost)
+        let newGhost = [...this.state.ghostsH]
+        newGhost.splice(ghostIndex,1)
+
+        ///// update array in state
+        if(directionH){
+          this.setState({
+            ghostsH: [...newGhost,[(ghost[0] + 1), ghost[1]]]
+          })
+        } else {
+          this.setState({
+            ghostsH: [...newGhost,[(ghost[0] - 1), ghost[1]]]
+          })
+        }
+      })
+
+    }, 100)
   }
 
   checkCollision = (col, row) => {
     let coinCheck = this.state.coins.filter(coin => (coin[0] === col) && (coin[1] === row))
+    let ghostCheckH = this.state.ghostsH.filter(ghost => (ghost[0] === col) && (ghost[1] === row))
+    let ghostCheckV = this.state.ghostsV.filter(ghost => (ghost[0] === col) && (ghost[1] === row))
 
     if ([3,4].includes(this.state.map.getTile(col,row))) {
       return false
@@ -41,7 +95,7 @@ class Game extends React.Component {
         score: this.state.score + 10
       })
       return true
-    } else if ((this.state.ghostXy[0] === col) && (this.state.ghostXy[1] === row)) {
+    } else if (ghostCheckH.length || ghostCheckV.length) {
       console.log("ded");
       this.setState({
         heroXy: [0,9],
@@ -108,7 +162,8 @@ class Game extends React.Component {
       cols: 10,
       rows: 10,
       coins: [[6,5],[5,5],[4,5]],
-      ghosts: [],
+      ghostsH: [],
+      ghostsV: [],
       tsize: 60,
       tiles: [
         3,2,3,2,3,2,3,1,1,5,
@@ -129,28 +184,13 @@ class Game extends React.Component {
     this.setState({
       map: map,
       heroXy: [map.start[0], map.start[1]],
-      coins: map.coins
-    });
+      coins: map.coins,
+      ghostsH: [[3,4],[9,3]]
+
+    }, this.moveGhosts());
 
     ///////// set interval for ghost //////////
-    let direction;
-    setInterval(()=>{
-      if(this.state.ghostXy[0] === 0){
-        direction = true
-      }else if (this.state.ghostXy[0] === 9){
-        direction = false
-      }
 
-      if(direction){
-        this.setState({
-          ghostXy: [(this.state.ghostXy[0] + 1), 4]
-        })
-      } else {
-        this.setState({
-          ghostXy: [(this.state.ghostXy[0] - 1), 4]
-        })
-      }
-    }, 300)
 
     requestAnimationFrame(() => this.update());
   }
@@ -320,8 +360,13 @@ class Game extends React.Component {
     window.addEventListener('keypress', this.moveHero)
 
     ////////////////////////////////// Make Enemy /////////////////////////
-    Enemy(this.state.map, this.state.ghostXy, ctx)
-    if ((this.state.ghostXy[0] === (this.state.heroXy[0])) && (this.state.ghostXy[1] === this.state.heroXy[1])) {
+    this.state.ghostsH.forEach((ghost) => {
+      Enemy(this.state.map, ghost, ctx)
+    })
+    //////////// check for ghost impact
+    let ghostCheckH = this.state.ghostsH.filter(ghost => (ghost[0] === this.state.heroXy[0]) && (ghost[1] === this.state.heroXy[1]))
+    let ghostCheckV = this.state.ghostsV.filter(ghost => (ghost[0] === this.state.heroXy[0]) && (ghost[1] === this.state.heroXy[1]))
+    if (ghostCheckH.length || ghostCheckV.length) {
       console.log("ghost got ya")
       this.setState({
         heroXy: [0,9],
