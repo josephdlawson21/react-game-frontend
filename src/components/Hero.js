@@ -10,12 +10,12 @@
 //
 // }
 
-const Hero = (map,col,row,ctx) => {
+const Hero = (map,arr,ctx) => {
   let bob = document.getElementById('character');
   ctx.drawImage(
     bob, // image
-    (col * map.tsize) + 7, // target x
-    (row * map.tsize) + 7 // target y
+    (arr[0] * map.tsize) + 7, // target x
+    (arr[1] * map.tsize) + 7 // target y
   );
 }
 
