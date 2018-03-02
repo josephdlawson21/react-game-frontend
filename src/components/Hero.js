@@ -10,9 +10,13 @@
 //
 // }
 
-const Hero = (map,x,y,ctx) => {
+const Hero = (map,col,row,ctx) => {
   let bob = document.getElementById('character');
-  ctx.drawImage(bob, x,y)
+  ctx.drawImage(
+    bob, // image
+    (col * map.tsize) + 20, // target x
+    (row * map.tsize) + 20 // target y
+  );
 }
 
 export default Hero

@@ -16,63 +16,72 @@ const KEY = {
   SPACE: 32
 };
 
-
-
-// class Hero extends React.Component {
-//   constructor(map,x,y,ctx){
-//     super()
-//
-//     this.character = document.getElementById('character');
-//
-//     ctx.drawImage(this.character, x,y)
-//   }
-//
-// }
-
-
 class Game extends React.Component {
   state = {
     context: null,
-    heroX: 320,
-    heroY: 620,
+    heroCol: 6,
+    heroRow: 6,
     coin: [],
-    rock: [[110,210]]
+    rock: [],
+    map: {}
   }
 
   moveHero = (event) => {
-    if(event.key === 'd'){
-      if(this.state.heroX < 620){
-        if (this.state.rock.includes(this.state.heroX + 110)) {
-
+    switch (event.key) {
+      case 's':
+        if(this.state.heroRow !== 6){
+          this.setState({
+            heroRow: this.state.heroRow + 1
+          });
         }
-        this.setState({
-          heroX: this.state.heroX + 100
-        });
-      }
-    }else if(event.key === 'a'){
-      if(this.state.heroX >= 21){
-        this.setState({
-          heroX: this.state.heroX - 100
-        });
-      }
-    }else if(event.key === 'w'){
-      if(this.state.heroY >= 21){
-        this.setState({
-          heroY: this.state.heroY - 100
-        });
-      }
-    }else if (event.key === 's') {
-      if(this.state.heroY < 620){
-        this.setState({
-          heroY: this.state.heroY + 100
-        });
-      }
+        break;
+      case 'w':
+        if(this.state.heroRow !== 0){
+          this.setState({
+            heroRow: this.state.heroRow - 1
+          });
+        }
+        break;
+      case 'a':
+        if(this.state.heroCol !== 0){
+          console.log(this.state.map.getTile((this.state.col -1), this.state.row));
+          this.setState({
+            heroCol: this.state.heroCol - 1
+          });
+        }
+        break;
+      case 'd':
+        if(this.state.heroCol !== 6){
+          this.setState({
+            heroCol: this.state.heroCol + 1
+          });
+        }
+        break;
     }
   }
 
 
   componentDidMount() {
-
+    let map = {
+      cols: 7,
+      rows: 7,
+      tsize: 100,
+      tiles: [
+        1,4,3,2,1,2,1,
+        2,1,2,1,2,1,2,
+        1,2,1,2,1,2,1,
+        2,1,2,1,2,1,2,
+        1,2,1,2,1,2,1,
+        2,1,2,1,2,1,2,
+        1,2,1,2,1,2,1
+      ],
+      getTile: function(col, row) {
+        return this.tiles[row * map.cols + col]
+      }
+    }
+    this.setState({
+      map: map
+    });
     requestAnimationFrame(() => this.update());
   }
 
@@ -83,41 +92,75 @@ class Game extends React.Component {
     let rock = document.getElementById('rock');
     let coin = document.getElementById('coin');
     let ctx = document.getElementById('canvas').getContext('2d')
-    let tiles = [
-      //left
-      [1,0,1,2,1,0,1],
-      [5,1,0,1,0,1,0],
-      [3,0,1,2,1,0,2],
-      [0,1,0,1,0,1,0], //bottom
-      [1,3,4,0,1,0,1],
-      [4,1,0,1,3,1,0],
-      [1,5,1,0,1,0,1]
-      //right
-    ]
 
-
-
-    for(let i = 0; i < tiles.length; i++){
-      for(let j = 0; j < tiles[i].length; j++){
-        if(tiles[i][j] === 0){
-          ctx.drawImage(dirt, 100*i, 100*j);
-        }else if(tiles[i][j] === 1){
-          ctx.drawImage(grass, 100*i, 100*j);
-        }else if(tiles[i][j] === 2){
-          ctx.drawImage(grass, 100*i, 100*j);
-          ctx.drawImage(rock, (100*i) + 10, (100*j) + 10);
-        }else if(tiles[i][j] === 3){
-          ctx.drawImage(dirt, 100*i, 100*j);
-          ctx.drawImage(rock, (100*i) + 10, (100*j) + 10);
-        }else if(tiles[i][j] === 4){
-          ctx.drawImage(dirt, 100*i, 100*j);
-          ctx.drawImage(coin, (100*i) + 10, (100*j) + 10);
-        }else if(tiles[i][j] === 5){
-          ctx.drawImage(grass, 100*i, 100*j);
-          ctx.drawImage(coin, (100*i) + 10, (100*j) + 10);
+    for (var c = 0; c < this.state.map.cols; c++) {
+      for (var r = 0; r < this.state.map.rows; r++) {
+        var tile = this.state.map.getTile(c, r);
+        switch (tile) {
+          case 1:
+            ctx.drawImage(
+              grass, // image
+              c * this.state.map.tsize, // target x
+              r * this.state.map.tsize, // target y
+            );
+            break;
+          case 2:
+            ctx.drawImage(
+              dirt, // image
+              c * this.state.map.tsize, // target x
+              r * this.state.map.tsize, // target y
+            );
+            break;
+          case 3:
+            ctx.drawImage(
+              grass, // image
+              c * this.state.map.tsize, // target x
+              r * this.state.map.tsize, // target y
+            );
+            ctx.drawImage(
+              rock, // image
+              (c * this.state.map.tsize) + 10, // target x
+              (r * this.state.map.tsize) + 10, // target y
+            );
+            break;
+          case 4:
+            ctx.drawImage(
+              dirt, // image
+              c * this.state.map.tsize, // target x
+              r * this.state.map.tsize, // target y
+            );
+            ctx.drawImage(
+              rock, // image
+              (c * this.state.map.tsize) + 10, // target x
+              (r * this.state.map.tsize) + 10, // target y
+            );
+            break;
         }
+
       }
     }
+
+    // for(let i = 0; i < map.tiles.length; i++){
+    //   for(let j = 0; j < map.tiles[i].length; j++){
+    //     if(map.tiles[i][j] === 0){
+    //       ctx.drawImage(dirt, 100*i, 100*j);
+    //     }else if(map.tiles[i][j] === 1){
+    //       ctx.drawImage(grass, 100*i, 100*j);
+    //     }else if(map.tiles[i][j] === 2){
+    //       ctx.drawImage(grass, 100*i, 100*j);
+    //       ctx.drawImage(rock, (100*i) + 10, (100*j) + 10);
+    //     }else if(map.tiles[i][j] === 3){
+    //       ctx.drawImage(dirt, 100*i, 100*j);
+    //       ctx.drawImage(rock, (100*i) + 10, (100*j) + 10);
+    //     }else if(map.tiles[i][j] === 4){
+    //       ctx.drawImage(dirt, 100*i, 100*j);
+    //       ctx.drawImage(coin, (100*i) + 10, (100*j) + 10);
+    //     }else if(map.tiles[i][j] === 5){
+    //       ctx.drawImage(grass, 100*i, 100*j);
+    //       ctx.drawImage(coin, (100*i) + 10, (100*j) + 10);
+    //     }
+    //   }
+    // }
     /////////////////////////////////create coins //////////////////////////
     // Coin(110,110,ctx)
     // Coin(210,210,ctx)
@@ -128,7 +171,7 @@ class Game extends React.Component {
 
 
     ////////////////////////////////// create Hero //////////////////////
-    Hero(tiles, this.state.heroX, this.state.heroY, ctx)
+    Hero(this.state.map, this.state.heroCol, this.state.heroRow, ctx)
     window.addEventListener('keypress', this.moveHero)
 
 
