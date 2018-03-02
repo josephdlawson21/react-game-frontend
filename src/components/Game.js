@@ -5,7 +5,7 @@ import React from 'react'
 import './App.css';
 import Hero from './Hero'
 import Coin from './Coin'
-
+import Enemy from './Enemy'
 const KEY = {
   LEFT:  37,
   RIGHT: 39,
@@ -21,14 +21,28 @@ class Game extends React.Component {
     context: null,
     heroCol: 6,
     heroRow: 6,
-    coin: [],
-    rock: [],
-    map: {}
+    coins: [[6,5],[5,5],[4,5]],
+    map: {},
+    score: 0,
+    enemyXY: [6,4]
   }
 
   checkCollision = (col, row) => {
+    let coinCheck = this.state.coins.filter(coin => (coin[0] === col) && (coin[1] === row))
+
     if ([3,4].includes(this.state.map.getTile(col,row))) {
       return false
+
+    } else if(coinCheck.length){
+      let index = this.state.coins.indexOf(coinCheck[0])
+      let newCoins = [...this.state.coins]
+      newCoins.splice(index,1)
+      this.setState({
+        coins: newCoins,
+        score: this.state.score + 10
+      },() => console.log(this.state.score))
+      return true
+
     } else {
       return true
     };
@@ -89,6 +103,25 @@ class Game extends React.Component {
     this.setState({
       map: map
     });
+    let direction;
+    setInterval(()=>{
+      if(this.state.enemyXY[0] === 0){
+        direction = true
+      }else if (this.state.enemyXY[0] === 6){
+        direction = false
+      }
+
+      if(direction){
+        this.setState({
+          enemyXY: [(this.state.enemyXY[0] + 1), 4]
+        })
+      } else {
+        this.setState({
+          enemyXY: [(this.state.enemyXY[0] - 1), 4]
+        })
+      }
+    }, 20)
+
     requestAnimationFrame(() => this.update());
   }
 
@@ -150,11 +183,11 @@ class Game extends React.Component {
 
     /////////////////////////////////create coins //////////////////////////
     // Coin(110,110,ctx)
-    // Coin(210,210,ctx)
-    // Coin(310,310,ctx)
-    // Coin(410,410,ctx)
-    // Coin(510,510,ctx)
 
+    this.state.coins.forEach((coin)=> Coin(coin[0], coin[1], ctx, this.state.map))
+    ////////////////////////////////// Make Enemy /////////////////////////
+
+    Enemy(this.state.map, this.state.enemyXY, ctx)
 
 
     ////////////////////////////////// create Hero //////////////////////
@@ -172,6 +205,7 @@ class Game extends React.Component {
     return(
       <div className="App">
         <h1 className="title">super cool game</h1>
+        <h3 className="title">Score: {this.state.score}</h3>
         <canvas id="canvas" width="700" height="700">
 
         </canvas>
