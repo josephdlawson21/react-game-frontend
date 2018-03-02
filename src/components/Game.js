@@ -19,12 +19,12 @@ const KEY = {
 class Game extends React.Component {
   state = {
     context: null,
-    heroCol: 6,
-    heroRow: 6,
+    heroCol: 5,
+    heroRow: 9,
     coins: [[6,5],[5,5],[4,5]],
     map: {},
     score: 0,
-    enemyXY: [6,4]
+    enemyXY: [9,4]
   }
 
   checkCollision = (col, row) => {
@@ -51,7 +51,7 @@ class Game extends React.Component {
   moveHero = (event) => {
     switch (event.key) {
       case 's':
-        if(this.state.heroRow !== 6 && this.checkCollision((this.state.heroCol), (this.state.heroRow) + 1)){
+        if(this.state.heroRow !== 9 && this.checkCollision((this.state.heroCol), (this.state.heroRow) + 1)){
           this.setState({
             heroRow: this.state.heroRow + 1
           });
@@ -72,7 +72,7 @@ class Game extends React.Component {
         }
         break;
       case 'd':
-        if(this.state.heroCol !== 6 && this.checkCollision((this.state.heroCol + 1), (this.state.heroRow))){
+        if(this.state.heroCol !== 9 && this.checkCollision((this.state.heroCol + 1), (this.state.heroRow))){
           this.setState({
             heroCol: this.state.heroCol + 1
           });
@@ -84,17 +84,20 @@ class Game extends React.Component {
 
   componentDidMount() {
     let map = {
-      cols: 7,
-      rows: 7,
-      tsize: 100,
+      cols: 10,
+      rows: 10,
+      tsize: 60,
       tiles: [
-        3,2,3,2,3,2,3,
-        2,3,2,3,2,3,2,
-        3,2,3,2,1,2,1,
-        2,1,4,3,2,1,2,
-        1,2,1,2,1,2,1,
-        2,1,2,1,2,1,2,
-        1,2,1,2,1,2,1
+        3,2,3,2,3,2,3,1,1,1,
+        2,3,2,3,2,3,2,1,1,1,
+        3,2,3,2,1,2,1,1,1,2,
+        2,1,4,3,2,1,2,1,1,2,
+        1,2,3,2,1,2,1,1,2,1,
+        2,1,2,1,2,1,2,1,1,2,
+        2,1,2,1,2,1,2,1,1,2,
+        2,1,2,1,2,1,2,1,1,2,
+        2,1,2,1,2,1,2,1,1,1,
+        1,2,1,2,1,2,1,1,1,1
       ],
       getTile: function(col, row) {
         return this.tiles[row * map.cols + col]
@@ -103,11 +106,13 @@ class Game extends React.Component {
     this.setState({
       map: map
     });
+
+    ///////// set interval for ghost //////////
     let direction;
     setInterval(()=>{
       if(this.state.enemyXY[0] === 0){
         direction = true
-      }else if (this.state.enemyXY[0] === 6){
+      }else if (this.state.enemyXY[0] === 9){
         direction = false
       }
 
@@ -120,7 +125,7 @@ class Game extends React.Component {
           enemyXY: [(this.state.enemyXY[0] - 1), 4]
         })
       }
-    }, 250)
+    }, 300)
 
     requestAnimationFrame(() => this.update());
   }
@@ -140,40 +145,111 @@ class Game extends React.Component {
           case 1:
             ctx.drawImage(
               grass, // image
+              0, // source x
+              0, // source y
+              this.state.map.tsize, // source width
+              this.state.map.tsize, // source height
               c * this.state.map.tsize, // target x
               r * this.state.map.tsize, // target y
+              this.state.map.tsize, // target width
+              this.state.map.tsize // target height
             );
+
+
+            // ctx.drawImage(
+            //   grass, // image
+            //   c * this.state.map.tsize, // target x
+            //   r * this.state.map.tsize, // target y
+            // );
             break;
           case 2:
             ctx.drawImage(
               dirt, // image
+              0, // source x
+              0, // source y
+              this.state.map.tsize, // source width
+              this.state.map.tsize, // source height
               c * this.state.map.tsize, // target x
               r * this.state.map.tsize, // target y
+              this.state.map.tsize, // target width
+              this.state.map.tsize // target height
             );
+            // ctx.drawImage(
+            //   dirt, // image
+            //   c * this.state.map.tsize, // target x
+            //   r * this.state.map.tsize, // target y
+            // );
             break;
           case 3:
             ctx.drawImage(
               grass, // image
+              0, // source x
+              0, // source y
+              this.state.map.tsize, // source width
+              this.state.map.tsize, // source height
               c * this.state.map.tsize, // target x
               r * this.state.map.tsize, // target y
+              this.state.map.tsize, // target width
+              this.state.map.tsize // target height
             );
             ctx.drawImage(
               rock, // image
-              (c * this.state.map.tsize) + 10, // target x
-              (r * this.state.map.tsize) + 10, // target y
+              0, // source x
+              0, // source y
+              this.state.map.tsize, // source width
+              this.state.map.tsize, // source height
+              (c * this.state.map.tsize) + 6, // target x
+              (r * this.state.map.tsize) + 6, // target y
+              this.state.map.tsize, // target width
+              this.state.map.tsize // target height
             );
+
+
+            // ctx.drawImage(
+            //   grass, // image
+            //   c * this.state.map.tsize, // target x
+            //   r * this.state.map.tsize, // target y
+            // );
+            // ctx.drawImage(
+            //   rock, // image
+            //   (c * this.state.map.tsize) + 10, // target x
+            //   (r * this.state.map.tsize) + 10, // target y
+            // );
             break;
           case 4:
             ctx.drawImage(
               dirt, // image
+              0, // source x
+              0, // source y
+              this.state.map.tsize, // source width
+              this.state.map.tsize, // source height
               c * this.state.map.tsize, // target x
               r * this.state.map.tsize, // target y
+              this.state.map.tsize, // target width
+              this.state.map.tsize // target height
             );
             ctx.drawImage(
               rock, // image
-              (c * this.state.map.tsize) + 10, // target x
-              (r * this.state.map.tsize) + 10, // target y
+              0, // source x
+              0, // source y
+              this.state.map.tsize, // source width
+              this.state.map.tsize, // source height
+              (c * this.state.map.tsize) + 6, // target x
+              (r * this.state.map.tsize) + 6, // target y
+              this.state.map.tsize, // target width
+              this.state.map.tsize // target height
             );
+
+            // ctx.drawImage(
+            //   dirt, // image
+            //   c * this.state.map.tsize, // target x
+            //   r * this.state.map.tsize, // target y
+            // );
+            // ctx.drawImage(
+            //   rock, // image
+            //   (c * this.state.map.tsize) + 10, // target x
+            //   (r * this.state.map.tsize) + 10, // target y
+            // );
             break;
         }
 
@@ -206,16 +282,16 @@ class Game extends React.Component {
       <div className="App">
         <h1 className="title">super cool game</h1>
         <h3 className="title">Score: {this.state.score}</h3>
-        <canvas id="canvas" width="700" height="700">
+        <canvas id="canvas" width="600" height="600">
 
         </canvas>
         <div className="imgHider">
-          <img id="dirt" src={require('./dirt-tile.png')}/>
-          <img id="grass" src={require('./grass-tile.png')}/>
-          <img id="character" src={require('./character-tile.png')}/>
-          <img id="coin" src={require('./coin-tile.png')}/>
-          <img id="rock" src={require('./rock-tile.png')}/>
-          <img id="ghost" src={require('./ghost-tile.png')}/>
+          <img id="dirt" src={require('./assets/dirt-tile.png')}/>
+          <img id="grass" src={require('./assets/grass-tile.png')}/>
+          <img id="character" src={require('./assets/character-tile.png')}/>
+          <img id="coin" src={require('./assets/coin-tile.png')}/>
+          <img id="rock" src={require('./assets/rock-tile.png')}/>
+          <img id="ghost" src={require('./assets/ghost-tile.png')}/>
         </div>
       </div>
     )

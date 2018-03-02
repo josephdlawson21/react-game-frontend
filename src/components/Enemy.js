@@ -3,8 +3,8 @@ const Enemy = (map,xy,ctx) => {
   let enemy = document.getElementById('ghost');
   ctx.drawImage(
     enemy, // image
-    (xy[0] * map.tsize) + 10, // target x
-    (xy[1] * map.tsize) + 10, // target y
+    (xy[0] * map.tsize) + 6, // target x
+    (xy[1] * map.tsize) + 6, // target y
   );
 }
 
