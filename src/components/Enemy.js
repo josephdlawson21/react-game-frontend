@@ -1,6 +1,6 @@
 
 const Enemy = (map,xy,ctx) => {
-  let enemy = document.getElementById('rock');
+  let enemy = document.getElementById('ghost');
   ctx.drawImage(
     enemy, // image
     (xy[0] * map.tsize) + 10, // target x

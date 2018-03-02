@@ -120,7 +120,7 @@ class Game extends React.Component {
           enemyXY: [(this.state.enemyXY[0] - 1), 4]
         })
       }
-    }, 20)
+    }, 250)
 
     requestAnimationFrame(() => this.update());
   }
@@ -215,6 +215,7 @@ class Game extends React.Component {
           <img id="character" src={require('./character-tile.png')}/>
           <img id="coin" src={require('./coin-tile.png')}/>
           <img id="rock" src={require('./rock-tile.png')}/>
+          <img id="ghost" src={require('./ghost-tile.png')}/>
         </div>
       </div>
     )
