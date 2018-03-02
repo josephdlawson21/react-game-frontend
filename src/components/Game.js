@@ -26,32 +26,39 @@ class Game extends React.Component {
     map: {}
   }
 
+  checkCollision = (col, row) => {
+    if ([3,4].includes(this.state.map.getTile(col,row))) {
+      return false
+    } else {
+      return true
+    };
+  }
+
   moveHero = (event) => {
     switch (event.key) {
       case 's':
-        if(this.state.heroRow !== 6){
+        if(this.state.heroRow !== 6 && this.checkCollision((this.state.heroCol), (this.state.heroRow) + 1)){
           this.setState({
             heroRow: this.state.heroRow + 1
           });
         }
         break;
       case 'w':
-        if(this.state.heroRow !== 0){
+        if(this.state.heroRow !== 0 && this.checkCollision((this.state.heroCol), (this.state.heroRow - 1))){
           this.setState({
             heroRow: this.state.heroRow - 1
           });
         }
         break;
       case 'a':
-        if(this.state.heroCol !== 0){
-          console.log(this.state.map.getTile((this.state.col -1), this.state.row));
+        if(this.state.heroCol !== 0 && this.checkCollision((this.state.heroCol - 1), (this.state.heroRow))){
           this.setState({
             heroCol: this.state.heroCol - 1
           });
         }
         break;
       case 'd':
-        if(this.state.heroCol !== 6){
+        if(this.state.heroCol !== 6 && this.checkCollision((this.state.heroCol + 1), (this.state.heroRow))){
           this.setState({
             heroCol: this.state.heroCol + 1
           });
@@ -67,10 +74,10 @@ class Game extends React.Component {
       rows: 7,
       tsize: 100,
       tiles: [
-        1,4,3,2,1,2,1,
-        2,1,2,1,2,1,2,
-        1,2,1,2,1,2,1,
-        2,1,2,1,2,1,2,
+        3,2,3,2,3,2,3,
+        2,3,2,3,2,3,2,
+        3,2,3,2,1,2,1,
+        2,1,4,3,2,1,2,
         1,2,1,2,1,2,1,
         2,1,2,1,2,1,2,
         1,2,1,2,1,2,1
@@ -140,27 +147,7 @@ class Game extends React.Component {
       }
     }
 
-    // for(let i = 0; i < map.tiles.length; i++){
-    //   for(let j = 0; j < map.tiles[i].length; j++){
-    //     if(map.tiles[i][j] === 0){
-    //       ctx.drawImage(dirt, 100*i, 100*j);
-    //     }else if(map.tiles[i][j] === 1){
-    //       ctx.drawImage(grass, 100*i, 100*j);
-    //     }else if(map.tiles[i][j] === 2){
-    //       ctx.drawImage(grass, 100*i, 100*j);
-    //       ctx.drawImage(rock, (100*i) + 10, (100*j) + 10);
-    //     }else if(map.tiles[i][j] === 3){
-    //       ctx.drawImage(dirt, 100*i, 100*j);
-    //       ctx.drawImage(rock, (100*i) + 10, (100*j) + 10);
-    //     }else if(map.tiles[i][j] === 4){
-    //       ctx.drawImage(dirt, 100*i, 100*j);
-    //       ctx.drawImage(coin, (100*i) + 10, (100*j) + 10);
-    //     }else if(map.tiles[i][j] === 5){
-    //       ctx.drawImage(grass, 100*i, 100*j);
-    //       ctx.drawImage(coin, (100*i) + 10, (100*j) + 10);
-    //     }
-    //   }
-    // }
+
     /////////////////////////////////create coins //////////////////////////
     // Coin(110,110,ctx)
     // Coin(210,210,ctx)
