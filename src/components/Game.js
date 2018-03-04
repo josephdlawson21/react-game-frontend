@@ -28,54 +28,71 @@ class Game extends React.Component {
   }
 
   moveGhosts = () => {
-    let directionV;
-    let directionH;
-    // setInterval(()=>{
-    //   if(this.state.ghostXy[0] === 0){
-    //     directionV = true
-    //   }else if (this.state.ghostXy[0] === 9){
-    //     directionV = false
-    //   }
-    //
-    //   if(directionV){
-    //     this.setState({
-    //       ghostXy: [(this.state.ghostXy[0] + 1), 4]
-    //     })
-    //   } else {
-    //     this.setState({
-    //       ghostXy: [(this.state.ghostXy[0] - 1), 4]
-    //     })
-    //   }
-    // }, 100)
-    console.log(this.state);
-    setInterval(()=>{
-      this.state.ghostsH.forEach((ghost) => {
+    this.state.ghostsV.forEach((ghost, index) => {
+      let directionV;
+      setInterval(()=>{
       //// iterate through horizontal ghosts
 
         /////// determine direction
-        if(ghost[0] === 0){
+        if(this.state.ghostsV[index][1] === 0){
+          directionV = true
+        }else if (this.state.ghostsV[index][1] === 9){
+          directionV = false
+        }
+
+        ///// update array in state
+        if(directionV){
+          //////////finding the ghost coordinaated and updating
+          let newGhost = [...this.state.ghostsV]
+          newGhost[index] = [ghost[0], (newGhost[index][1] + 1)]
+          this.setState({
+            ghostsV: [...newGhost]
+          })
+        } else {
+          //////////finding the ghost coordinaated and updating
+          let newGhost = [...this.state.ghostsV]
+          newGhost[index] = [ghost[0], (newGhost[index][1] - 1)]
+          this.setState({
+            ghostsV: [...newGhost]
+          })
+        }
+      }, 100)
+
+    })
+
+
+    this.state.ghostsH.forEach((ghost, index) => {
+
+      let directionH;
+      setInterval(()=>{
+      //// iterate through horizontal ghosts
+
+        /////// determine direction
+        if(this.state.ghostsH[index][0] === 0){
           directionH = true
-        }else if (ghost[0] === 9){
+        }else if (this.state.ghostsH[index][0] === 9){
           directionH = false
         }
-        //////////finding the ghost coordinaated and updating
-        let ghostIndex = this.state.ghostsH.indexOf(ghost)
-        let newGhost = [...this.state.ghostsH]
-        newGhost.splice(ghostIndex,1)
 
         ///// update array in state
         if(directionH){
+          //////////finding the ghost coordinaated and updating
+          let newGhost = [...this.state.ghostsH]
+          newGhost[index] = [(newGhost[index][0] + 1), ghost[1]]
           this.setState({
-            ghostsH: [...newGhost,[(ghost[0] + 1), ghost[1]]]
+            ghostsH: [...newGhost]
           })
         } else {
+          //////////finding the ghost coordinaated and updating
+          let newGhost = [...this.state.ghostsH]
+          newGhost[index] = [(newGhost[index][0] - 1), ghost[1]]
           this.setState({
-            ghostsH: [...newGhost,[(ghost[0] - 1), ghost[1]]]
+            ghostsH: [...newGhost]
           })
         }
-      })
+      }, 100)
 
-    }, 100)
+    })
   }
 
   checkCollision = (col, row) => {
@@ -185,9 +202,10 @@ class Game extends React.Component {
       map: map,
       heroXy: [map.start[0], map.start[1]],
       coins: map.coins,
-      ghostsH: [[3,4],[9,3]]
+      ghostsH: [[3,4],[9,3],[2,1], [1,0], [4,5]],
+      ghostsV: [[5,5], [7,7]]
 
-    }, this.moveGhosts());
+    },() => this.moveGhosts());
 
     ///////// set interval for ghost //////////
 
@@ -269,18 +287,6 @@ class Game extends React.Component {
               this.state.map.tsize, // target width
               this.state.map.tsize // target height
             );
-
-
-            // ctx.drawImage(
-            //   grass, // image
-            //   c * this.state.map.tsize, // target x
-            //   r * this.state.map.tsize, // target y
-            // );
-            // ctx.drawImage(
-            //   rock, // image
-            //   (c * this.state.map.tsize) + 10, // target x
-            //   (r * this.state.map.tsize) + 10, // target y
-            // );
             break;
           case 4:
             ctx.drawImage(
@@ -361,6 +367,10 @@ class Game extends React.Component {
 
     ////////////////////////////////// Make Enemy /////////////////////////
     this.state.ghostsH.forEach((ghost) => {
+      Enemy(this.state.map, ghost, ctx)
+    })
+
+    this.state.ghostsV.forEach((ghost) => {
       Enemy(this.state.map, ghost, ctx)
     })
     //////////// check for ghost impact
