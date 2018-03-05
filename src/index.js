@@ -1,7 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Game from './components/Game'
+import App from './App'
 import registerServiceWorker from './registerServiceWorker';
+import {BrowserRouter, Switch, Route} from 'react-router-dom'
 
-ReactDOM.render(<Game />, document.getElementById('root'));
+ReactDOM.render(
+  <BrowserRouter>
+    <App />
+  </BrowserRouter>, document.getElementById('root'));
+
 registerServiceWorker();

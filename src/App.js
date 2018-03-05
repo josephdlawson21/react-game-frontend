@@ -1,69 +1,63 @@
-import React, { Component } from 'react';
+import React from 'react'
+import PropTypes from 'prop-types'
+import Game from './components/Game'
+import NavBar from './components/NavBar'
+import LogIn from './components/LogIn'
+import {Switch, Route} from 'react-router-dom'
 
-
-class App extends Component {
-
+class App extends React.Component {
   state = {
-    left:'250px',
-    right:'0px',
-    top:'250px',
-    bottom:'0px'
-  }
-
-  keyPress = (event) => {
-    if(event.key === 'd'){
-      this.setState({
-        left: `${parseInt(this.state.left) + 10}px`
-      },() => console.log(this.state))
-    }else if(event.key === 'a'){
-      this.setState({
-        left: `${parseInt(this.state.left) - 10}px`
-      },() => console.log(this.state))
-    }else if(event.key === 'w'){
-      this.setState({
-        top: `${parseInt(this.state.top) - 10}px`
-      },() => console.log(this.state))
-    }else if (event.key === 's') {
-      this.setState({
-        top: `${parseInt(this.state.top) + 10}px`
-      },() => console.log(this.state))
+    auth: {
+      loggedIn: false
     }
   }
 
-  render() {
-    return (
+  componentDidMount() {
+    const token = localStorage.getItem('token')
+    if (token) {
+      this.setState({
+        auth: {
+          loggedIn: true,
+          token: token
+        }
+      })
+    }
+  }
 
-      <div className="App">
-        <h1 className="title">super cool game</h1>
-        <div className="Game">
-          <Block keyPress={this.keyPress} right={this.state.right} left={this.state.left} top={this.state.top} bottom={this.state.bottom}/>
-        </div>
+  login = (j) => {
+    localStorage.setItem('token', j.token)
+    this.setState({
+      auth: {
+        loggedIn: true,
+        token: j.token
+      }
+    })
+  }
 
+  logout = (e) => {
+    e.preventDefault()
+    localStorage.removeItem('token')
+    this.setState({
+      auth: {
+        loggedIn: false,
+        token: undefined
+      }
+    })
+  }
+
+
+  render () {
+    return(
+      <div>
+        <NavBar logOutFunc={this.logout}/>
+        <Switch>
+          <Route path='/' render={() => {
+            return this.state.auth.loggedIn ? <Game/> : <LogIn loginFunc={this.login} logoutFunc={this.logout} auth={this.state.auth} />}
+          }></Route>
+        </Switch>
       </div>
-    );
+    )
   }
 }
-
-class Block extends React.Component {
-  componentDidMount(){
-    window.addEventListener('keypress', this.props.keyPress)
-  }
-  render(){
-      let style = {
-        position: 'relative',
-        width:'1em',
-        height:'1em',
-        top: this.props.top,
-        bottom: this.props.bottom,
-        left: this.props.left,
-        right: this.props.right,
-        backgroundColor: 'red'
-      }
-      return(
-        <div style={style}/>
-      )
-    }
-  }
-
 
 export default App;

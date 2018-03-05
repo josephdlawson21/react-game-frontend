@@ -1,8 +1,9 @@
 .App {
-  margin-left: 33%;
+  margin: auto;
+  width: 45%;
 }
 
-.title {
+.score {
   text-align: center;
   width: 600px;
 }

@@ -15,6 +15,7 @@ const KEY = {
   W: 87,
   SPACE: 32
 };
+var animationFrameLUL;
 
 class Game extends React.Component {
   state = {
@@ -24,7 +25,8 @@ class Game extends React.Component {
     map: {},
     score: 0,
     ghostsH: [],
-    ghostsV: []
+    ghostsV: [],
+    loop: true
   }
 
   moveGhosts = () => {
@@ -129,6 +131,7 @@ class Game extends React.Component {
     switch (event.which) {
       case 83:
       case 40:
+        event.preventDefault()
         if(this.state.heroXy[1] !== 9 && this.checkCollision((this.state.heroXy[0]), (this.state.heroXy[1]) + 1)){
           this.setState({
             heroXy: [this.state.heroXy[0],(this.state.heroXy[1] + 1)]
@@ -137,6 +140,7 @@ class Game extends React.Component {
         break;
       case 38:
       case 87:
+        event.preventDefault()
         if(this.state.heroXy[1] !== 0 && this.checkCollision((this.state.heroXy[0]), (this.state.heroXy[1] - 1))){
           this.setState({
             heroXy: [this.state.heroXy[0],(this.state.heroXy[1] - 1)]
@@ -151,6 +155,7 @@ class Game extends React.Component {
         break;
       case 65:
       case 37:
+        event.preventDefault()
         if(this.state.heroXy[0] !== 0 && this.checkCollision((this.state.heroXy[0] - 1), (this.state.heroXy[1]))){
           this.setState({
             heroXy: [(this.state.heroXy[0] - 1), this.state.heroXy[1]]
@@ -159,6 +164,7 @@ class Game extends React.Component {
         break;
       case 39:
       case 68:
+        event.preventDefault()
         if(this.state.heroXy[0] !== 9 && this.checkCollision((this.state.heroXy[0] + 1), (this.state.heroXy[1]))){
           this.setState({
             heroXy: [(this.state.heroXy[0] + 1), this.state.heroXy[1]]
@@ -187,7 +193,7 @@ class Game extends React.Component {
       ghostsV: [],
       tsize: 60,
       tiles: [
-        3,2,3,2,3,2,3,1,1,5,
+        1,1,1,1,1,1,1,1,1,5,
         2,3,2,3,2,3,2,1,1,1,
         3,2,3,2,1,2,1,1,1,2,
         2,1,4,3,2,1,2,1,1,2,
@@ -207,14 +213,14 @@ class Game extends React.Component {
       heroXy: [map.start[0], map.start[1]],
       coins: map.coins,
       ghostsH: [[3,4],[9,3],[2,1], [1,0], [4,5]],
-      ghostsV: [[5,5], [7,7]]
+      ghostsV: []
 
     },() => this.moveGhosts());
 
     ///////// set interval for ghost //////////
 
 
-    requestAnimationFrame(() => this.update());
+   requestAnimationFrame(() => this.update());
   }
 
   update = () => {
@@ -242,13 +248,6 @@ class Game extends React.Component {
               this.state.map.tsize, // target width
               this.state.map.tsize // target height
             );
-
-
-            // ctx.drawImage(
-            //   grass, // image
-            //   c * this.state.map.tsize, // target x
-            //   r * this.state.map.tsize, // target y
-            // );
             break;
           case 2:
             ctx.drawImage(
@@ -356,14 +355,10 @@ class Game extends React.Component {
 
       }
     }
-
-
     /////////////////////////////////create coins //////////////////////////
     // Coin(110,110,ctx)
 
     this.state.coins.forEach((coin)=> Coin(coin[0], coin[1], ctx, this.state.map))
-
-
 
     ////////////////////////////////// create Hero //////////////////////
     Hero(this.state.map, this.state.heroXy, ctx)
@@ -377,6 +372,7 @@ class Game extends React.Component {
     this.state.ghostsV.forEach((ghost) => {
       Enemy(this.state.map, ghost, ctx)
     })
+
     //////////// check for ghost impact
     let ghostCheckH = this.state.ghostsH.filter(ghost => (ghost[0] === this.state.heroXy[0]) && (ghost[1] === this.state.heroXy[1]))
     let ghostCheckV = this.state.ghostsV.filter(ghost => (ghost[0] === this.state.heroXy[0]) && (ghost[1] === this.state.heroXy[1]))
@@ -389,17 +385,18 @@ class Game extends React.Component {
       });
     }
 
-
-    requestAnimationFrame(() => {this.update()})
+    animationFrameLUL = requestAnimationFrame(() => {this.update()})
+    animationFrameLUL
   }
 
+  componentWillUnmount(){
+    window.cancelAnimationFrame(animationFrameLUL)
+  }
 
   render () {
-
     return(
       <div className="App">
-        <h1 className="title">super cool game</h1>
-        <h3 className="title">Score: {this.state.score}</h3>
+        <h4 className="score">Score: {this.state.score}</h4>
         <canvas id="canvas" width="600" height="600">
 
         </canvas>
@@ -417,5 +414,6 @@ class Game extends React.Component {
     )
   }
 }
+
 
 export default Game;
