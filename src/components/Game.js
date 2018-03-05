@@ -56,7 +56,7 @@ class Game extends React.Component {
             ghostsV: [...newGhost]
           })
         }
-      }, 100)
+      }, 300)
 
     })
 
@@ -90,7 +90,7 @@ class Game extends React.Component {
             ghostsH: [...newGhost]
           })
         }
-      }, 100)
+      }, 300)
 
     })
   }
@@ -125,36 +125,40 @@ class Game extends React.Component {
   }
 
   moveHero = (event) => {
-    switch (event.key) {
-      case 's':
+    console.log(event.which);
+    switch (event.which) {
+      case 83:
+      case 40:
         if(this.state.heroXy[1] !== 9 && this.checkCollision((this.state.heroXy[0]), (this.state.heroXy[1]) + 1)){
           this.setState({
             heroXy: [this.state.heroXy[0],(this.state.heroXy[1] + 1)]
           });
         }
         break;
-      case 'w':
+      case 38:
+      case 87:
         if(this.state.heroXy[1] !== 0 && this.checkCollision((this.state.heroXy[0]), (this.state.heroXy[1] - 1))){
           this.setState({
             heroXy: [this.state.heroXy[0],(this.state.heroXy[1] - 1)]
           });
         }
         if (this.state.heroXy[0] == 9 && this.state.heroXy[1] === 0) {
-          console.log("winner");
           this.setState({
             heroXy: [0,9],
             coins: [[6,5],[5,5],[4,5]]
           });
         }
         break;
-      case 'a':
+      case 65:
+      case 37:
         if(this.state.heroXy[0] !== 0 && this.checkCollision((this.state.heroXy[0] - 1), (this.state.heroXy[1]))){
           this.setState({
             heroXy: [(this.state.heroXy[0] - 1), this.state.heroXy[1]]
           });
         }
         break;
-      case 'd':
+      case 39:
+      case 68:
         if(this.state.heroXy[0] !== 9 && this.checkCollision((this.state.heroXy[0] + 1), (this.state.heroXy[1]))){
           this.setState({
             heroXy: [(this.state.heroXy[0] + 1), this.state.heroXy[1]]
@@ -363,7 +367,7 @@ class Game extends React.Component {
 
     ////////////////////////////////// create Hero //////////////////////
     Hero(this.state.map, this.state.heroXy, ctx)
-    window.addEventListener('keypress', this.moveHero)
+    window.addEventListener('keydown', this.moveHero)
 
     ////////////////////////////////// Make Enemy /////////////////////////
     this.state.ghostsH.forEach((ghost) => {
