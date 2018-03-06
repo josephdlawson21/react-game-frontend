@@ -120,7 +120,7 @@ class Game extends React.Component {
       this.setState({
         heroXy: [0,9],
         score: 0,
-        coins: [[6,5],[5,5],[4,5]]
+        coins: [[0,0],[2,7],[6,5],[4,5],[7,7],[9,7],[5,8],[4,9],[2,3],[8,6],[6,0],[4,0],[5,2]],
       });
     }else {
       return true
@@ -163,7 +163,7 @@ class Game extends React.Component {
         if (this.state.heroXy[0] == 9 && this.state.heroXy[1] === 0) {
           this.setState({
             heroXy: [0,9],
-            coins: [[6,5],[5,5],[4,5]]
+            coins: [[0,0],[2,7],[6,5],[4,5],[7,7],[9,7],[5,8],[4,9],[2,3],[8,6],[6,0],[4,0],[5,2]],
           });
         }
         break;
@@ -188,7 +188,7 @@ class Game extends React.Component {
           console.log("winner");
           this.setState({
             heroXy: [0,9],
-            coins: [[6,5],[5,5],[4,5]]
+            coins: [[0,0],[2,7],[6,5],[4,5],[7,7],[9,7],[5,8],[4,9],[2,3],[8,6],[6,0],[4,0],[5,2]],
           });
         }
         break;
@@ -202,21 +202,22 @@ class Game extends React.Component {
       start: [0,9],
       cols: 10,
       rows: 10,
-      coins: [[6,5],[5,5],[4,5]],
+      coins: [[0,0],[2,7],[6,5],[4,5],[7,7],[9,7],[5,8],[4,9],[2,3],[8,6],[6,0],[4,0],[5,2]],
       ghostsH: [],
       ghostsV: [],
+      heroXy: [],
       tsize: 60,
       tiles: [
-        1,1,1,1,1,1,1,1,1,5,
-        2,3,2,3,2,3,2,1,1,1,
-        3,2,3,2,1,2,1,1,1,2,
-        2,1,4,3,2,1,2,1,1,2,
-        1,2,3,2,1,2,1,1,2,1,
-        2,1,2,1,2,1,2,1,1,2,
-        2,1,2,1,2,1,2,1,1,2,
-        2,1,2,1,2,1,2,1,1,2,
-        2,1,2,1,2,1,2,1,1,1,
-        1,2,1,2,1,2,1,1,1,1
+        1,1,1,3,1,3,1,3,1,5,
+        1,3,1,1,1,3,1,3,1,3,
+        1,3,3,3,1,1,1,3,1,1,
+        1,3,1,3,3,3,3,3,1,3,
+        1,1,1,3,1,1,1,1,1,1,
+        2,4,2,4,2,4,2,4,2,4,
+        2,4,2,4,2,4,2,4,2,4,
+        2,4,2,2,2,4,2,2,4,2,
+        2,4,4,4,4,2,2,4,4,2,
+        2,2,2,2,2,4,2,2,2,2
       ],
       getTile: function(col, row) {
         return this.tiles[row * map.cols + col]
@@ -226,8 +227,8 @@ class Game extends React.Component {
       map: map,
       heroXy: [map.start[0], map.start[1]],
       coins: map.coins,
-      ghostsH: [[3,4],[9,3],[2,1], [1,0], [4,5]],
-      ghostsV: []
+      ghostsH: [[3,4],[2,1],[7,7],[1,0],[4,5]],
+      ghostsV: [[8,0],[6,9]]
 
     },() => this.moveGhosts());
 
@@ -240,6 +241,7 @@ class Game extends React.Component {
   update = () => {
     /////////////////////////create map /////////////////////////
     let dirt = document.getElementById('dirt');
+    let path = document.getElementById('path');
     let grass = document.getElementById('grass');
     let rock = document.getElementById('rock');
     let coin = document.getElementById('coin');
@@ -365,6 +367,19 @@ class Game extends React.Component {
             );
 
             break;
+            case 6:
+              ctx.drawImage(
+                path, // image
+                0, // source x
+                0, // source y
+                this.state.map.tsize, // source width
+                this.state.map.tsize, // source height
+                c * this.state.map.tsize, // target x
+                r * this.state.map.tsize, // target y
+                this.state.map.tsize, // target width
+                this.state.map.tsize // target height
+              );
+              break;
         }
 
       }
@@ -396,7 +411,7 @@ class Game extends React.Component {
       this.setState({
         heroXy: [0,9],
         score: 0,
-        coins: [[6,5],[5,5],[4,5]]
+        coins: [[0,0],[2,7],[6,5],[4,5],[7,7],[9,7],[5,8],[4,9],[2,3],[8,6],[6,0],[4,0],[5,2]],
       });
     }
 
@@ -419,6 +434,7 @@ class Game extends React.Component {
         <div className="imgHider">
           <img id="dirt" src={require('./assets/dirt-tile.png')}/>
           <img id="grass" src={require('./assets/grass-tile.png')}/>
+          <img id="path" src={require('./assets/path-tile.png')}/>
           <img id="exit" src={require('./assets/grass-tile-exit.png')}/>
           <img id="character" src={require('./assets/character-tile.png')}/>
           <img id="coin" src={require('./assets/coin-tile.png')}/>
