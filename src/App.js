@@ -2,7 +2,7 @@ import React from 'react'
 import Game from './components/Game'
 import NavBar from './components/NavBar'
 import LogIn from './components/LogIn'
-import {Switch, Route} from 'react-router-dom'
+import {Switch, Route, Redirect} from 'react-router-dom'
 import About from './components/About'
 import Leaderboard from './components/Leaderboard'
 
@@ -38,7 +38,6 @@ class App extends React.Component {
   }
 
   logout = (e) => {
-    e.preventDefault()
     localStorage.removeItem('token')
     this.setState({
       auth: {

@@ -6,6 +6,9 @@ const NavBar = (props) => {
     <nav>
       <div className="nav-wrapper blue darken-2">
         <NavLink className="brand-logo center" to='/'>super cool game</NavLink>
+        <ul id="nav-mobile" className="left">
+          <li><img src={require('./assets/guyController.png')} className="iconFix"></img></li>
+        </ul>
         <ul id="nav-mobile" className="right">
           <li><NavLink to="/leaderboard">Leaderboard</NavLink></li>
           <li><NavLink to="/about">About</NavLink></li>

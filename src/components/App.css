@@ -18,3 +18,8 @@
 .imgHider {
   visibility: hidden;
 }
+
+.iconFix {
+  margin-left: 40%;
+  margin-top: 20%;
+}

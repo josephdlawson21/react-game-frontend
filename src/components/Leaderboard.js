@@ -15,7 +15,7 @@ class Leaderboard extends React.Component {
     .then(res => res.json())
     .then(json => {
       let newJson;
-      json.length >= 10 ? newJson = json.slice(0,9) : newJson = json 
+      json.length >= 10 ? newJson = json.slice(0,9) : newJson = json
       this.setState({
         scores: newJson
       }, () => console.log(this.state.scores))
@@ -24,11 +24,30 @@ class Leaderboard extends React.Component {
 
   render(){
     return (
-      <div>
-        <h3>Leaderboard</h3>
-        <ol>
-          {this.state.scores.map(score => <li key={score.id}>{score.username} {score.points}</li>)}
-        </ol>
+      <div className="container">
+        <h3 className="center-align">Leaderboard</h3>
+        <table className="bordered">
+          <thead>
+            <tr>
+                <th>Player</th>
+                <th>Score</th>
+            </tr>
+          </thead>
+          <tbody>
+            {this.state.scores.map(score => {
+              return (<tr key={score.id}>
+                        <td>
+                          {score.username}
+                        </td>
+                        <td>
+                          {score.points}
+                        </td>
+                      </tr>)
+            })}
+          </tbody>
+
+
+        </table>
       </div>
     )
   }
