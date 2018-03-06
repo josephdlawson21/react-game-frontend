@@ -6,6 +6,8 @@ import './App.css';
 import Hero from './Hero'
 import Coin from './Coin'
 import Enemy from './Enemy'
+import Maps from './assets/maps'
+
 const KEY = {
   LEFT:  37,
   RIGHT: 39,
@@ -16,6 +18,7 @@ const KEY = {
   SPACE: 32
 };
 var animationFrameLUL;
+var gameMap;
 
 class Game extends React.Component {
   state = {
@@ -118,9 +121,9 @@ class Game extends React.Component {
       console.log("ded");
       this.postScore(this.state.score)
       this.setState({
-        heroXy: [0,9],
+        heroXy: gameMap.heroXy,
         score: 0,
-        coins: [[0,0],[2,7],[6,5],[4,5],[7,7],[9,7],[5,8],[4,9],[2,3],[8,6],[6,0],[4,0],[5,2]],
+        coins: gameMap.coins
       });
     }else {
       return true
@@ -141,7 +144,6 @@ class Game extends React.Component {
   }
 
   moveHero = (event) => {
-    console.log(event.which);
     switch (event.which) {
       case 83:
       case 40:
@@ -161,10 +163,9 @@ class Game extends React.Component {
           });
         }
         if (this.state.heroXy[0] == 9 && this.state.heroXy[1] === 0) {
-          this.setState({
-            heroXy: [0,9],
-            coins: [[0,0],[2,7],[6,5],[4,5],[7,7],[9,7],[5,8],[4,9],[2,3],[8,6],[6,0],[4,0],[5,2]],
-          });
+          console.log("winner");
+          this.componentWillUnmount()
+          this.componentDidMount()
         }
         break;
       case 65:
@@ -186,10 +187,8 @@ class Game extends React.Component {
         }
         if (this.state.heroXy[0] == 9 && this.state.heroXy[1] === 0) {
           console.log("winner");
-          this.setState({
-            heroXy: [0,9],
-            coins: [[0,0],[2,7],[6,5],[4,5],[7,7],[9,7],[5,8],[4,9],[2,3],[8,6],[6,0],[4,0],[5,2]],
-          });
+          this.componentWillUnmount()
+          this.componentDidMount()
         }
         break;
     }
@@ -198,37 +197,22 @@ class Game extends React.Component {
 
 
   componentDidMount() {
-    let map = {
-      start: [0,9],
-      cols: 10,
-      rows: 10,
-      coins: [[0,0],[2,7],[6,5],[4,5],[7,7],[9,7],[5,8],[4,9],[2,3],[8,6],[6,0],[4,0],[5,2]],
-      ghostsH: [],
-      ghostsV: [],
-      heroXy: [],
-      tsize: 60,
-      tiles: [
-        1,1,1,3,1,3,1,3,1,5,
-        1,3,1,1,1,3,1,3,1,3,
-        1,3,3,3,1,1,1,3,1,1,
-        1,3,1,3,3,3,3,3,1,3,
-        1,1,1,3,1,1,1,1,1,1,
-        2,4,2,4,2,4,2,4,2,4,
-        2,4,2,4,2,4,2,4,2,4,
-        2,4,2,2,2,4,2,2,4,2,
-        2,4,4,4,4,2,2,4,4,2,
-        2,2,2,2,2,4,2,2,2,2
-      ],
-      getTile: function(col, row) {
-        return this.tiles[row * map.cols + col]
-      }
+    console.log("mount");
+    let id = Math.floor(Math.random() * 2)
+    gameMap = Maps.maps[id]
+    gameMap['getTile'] = function(col, row) {
+      return this.tiles[row * gameMap.cols + col]
     }
+
+    window.addEventListener('keydown', this.moveHero)
+
+
     this.setState({
-      map: map,
-      heroXy: [map.start[0], map.start[1]],
-      coins: map.coins,
-      ghostsH: [[3,4],[2,1],[7,7],[1,0],[4,5]],
-      ghostsV: [[8,0],[6,9]]
+      map: gameMap,
+      heroXy: [gameMap.start[0], gameMap.start[1]],
+      coins: gameMap.coins,
+      ghostsH: gameMap.ghostsH,
+      ghostsV: gameMap.ghostsV
 
     },() => this.moveGhosts());
 
@@ -391,7 +375,7 @@ class Game extends React.Component {
 
     ////////////////////////////////// create Hero //////////////////////
     Hero(this.state.map, this.state.heroXy, ctx)
-    window.addEventListener('keydown', this.moveHero)
+
 
     ////////////////////////////////// Make Enemy /////////////////////////
     this.state.ghostsH.forEach((ghost) => {
@@ -409,9 +393,9 @@ class Game extends React.Component {
       console.log("ghost got ya")
       this.postScore(this.state.score)
       this.setState({
-        heroXy: [0,9],
+        heroXy: gameMap.heroXy,
         score: 0,
-        coins: [[0,0],[2,7],[6,5],[4,5],[7,7],[9,7],[5,8],[4,9],[2,3],[8,6],[6,0],[4,0],[5,2]],
+        coins: gameMap.coins,
       });
     }
 
