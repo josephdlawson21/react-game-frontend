@@ -8,17 +8,10 @@ import Coin from './Coin'
 import Enemy from './Enemy'
 import Maps from './assets/maps'
 
-const KEY = {
-  LEFT:  37,
-  RIGHT: 39,
-  UP: 38,
-  A: 65,
-  D: 68,
-  W: 87,
-  SPACE: 32
-};
+
 var animationFrameLUL;
 var gameMap;
+var intervals = [];
 
 class Game extends React.Component {
   state = {
@@ -35,7 +28,7 @@ class Game extends React.Component {
   moveGhosts = () => {
     this.state.ghostsV.forEach((ghost, index) => {
       let directionV;
-      setInterval(()=>{
+      let int1 = setInterval(()=>{
       //// iterate through horizontal ghosts
 
         /////// determine direction
@@ -62,14 +55,14 @@ class Game extends React.Component {
           })
         }
       }, 300)
-
+      intervals.push(int1)
     })
 
 
     this.state.ghostsH.forEach((ghost, index) => {
 
       let directionH;
-      setInterval(()=>{
+      let int2 = setInterval(()=>{
       //// iterate through horizontal ghosts
 
         /////// determine direction
@@ -96,7 +89,7 @@ class Game extends React.Component {
           })
         }
       }, 300)
-
+      intervals.push(int2)
     })
   }
 
@@ -119,12 +112,7 @@ class Game extends React.Component {
       return true
     } else if (ghostCheckH.length || ghostCheckV.length) {
       console.log("ded");
-      this.postScore(this.state.score)
-      this.setState({
-        heroXy: gameMap.heroXy,
-        score: 0,
-        coins: gameMap.coins
-      });
+      this.endGame()
     }else {
       return true
     };
@@ -141,6 +129,34 @@ class Game extends React.Component {
         score: score
       })
     })
+  }
+
+
+  newGame = () => {
+    console.log("completed map");
+    intervals.forEach((int) => {
+      clearInterval(int)
+    })
+    console.log("intervals finished clearing");
+    window.cancelAnimationFrame(animationFrameLUL)
+    window.removeEventListener('keydown', this.moveHero)
+    this.startGame()
+  }
+
+  endGame = () => {
+    console.log("killed");
+    this.postScore(this.state.score)
+    this.setState({
+      score: 0
+    });
+    intervals.forEach((int) => {
+      console.log("hello");
+      clearInterval(int)
+    })
+    console.log("intervals cleared");
+    window.cancelAnimationFrame(animationFrameLUL)
+    window.removeEventListener('keydown', this.moveHero)
+    this.startGame()
   }
 
   moveHero = (event) => {
@@ -162,10 +178,9 @@ class Game extends React.Component {
             heroXy: [this.state.heroXy[0],(this.state.heroXy[1] - 1)]
           });
         }
-        if (this.state.heroXy[0] == 9 && this.state.heroXy[1] === 0) {
+        if (this.state.heroXy[0] === 9 && this.state.heroXy[1] === 0) {
           console.log("winner");
-          this.componentWillUnmount()
-          this.componentDidMount()
+          this.newGame()
         }
         break;
       case 65:
@@ -185,20 +200,19 @@ class Game extends React.Component {
             heroXy: [(this.state.heroXy[0] + 1), this.state.heroXy[1]]
           });
         }
-        if (this.state.heroXy[0] == 9 && this.state.heroXy[1] === 0) {
+        if (this.state.heroXy[0] === 9 && this.state.heroXy[1] === 0) {
           console.log("winner");
-          this.componentWillUnmount()
-          this.componentDidMount()
+          this.newGame()
         }
         break;
+        default:
     }
 
   }
 
-
-  componentDidMount() {
-    console.log("mount");
-    let id = Math.floor(Math.random() * 2)
+  startGame = () => {
+    console.log("startGame");
+    let id = Math.floor(Math.random() * Maps.maps.length)
     gameMap = Maps.maps[id]
     gameMap['getTile'] = function(col, row) {
       return this.tiles[row * gameMap.cols + col]
@@ -219,16 +233,21 @@ class Game extends React.Component {
     ///////// set interval for ghost //////////
 
 
-   requestAnimationFrame(() => this.update());
+   this.update();
+  }
+
+  componentDidMount() {
+    console.log("mount");
+    this.startGame()
   }
 
   update = () => {
+    console.log("update");
     /////////////////////////create map /////////////////////////
     let dirt = document.getElementById('dirt');
     let path = document.getElementById('path');
     let grass = document.getElementById('grass');
     let rock = document.getElementById('rock');
-    let coin = document.getElementById('coin');
     let winner = document.getElementById('winner');
     let ctx = document.getElementById('canvas').getContext('2d')
 
@@ -261,11 +280,6 @@ class Game extends React.Component {
               this.state.map.tsize, // target width
               this.state.map.tsize // target height
             );
-            // ctx.drawImage(
-            //   dirt, // image
-            //   c * this.state.map.tsize, // target x
-            //   r * this.state.map.tsize, // target y
-            // );
             break;
           case 3:
             ctx.drawImage(
@@ -364,12 +378,12 @@ class Game extends React.Component {
                 this.state.map.tsize // target height
               );
               break;
+              default:
         }
 
       }
     }
     /////////////////////////////////create coins //////////////////////////
-    // Coin(110,110,ctx)
 
     this.state.coins.forEach((coin)=> Coin(coin[0], coin[1], ctx, this.state.map))
 
@@ -391,21 +405,18 @@ class Game extends React.Component {
     let ghostCheckV = this.state.ghostsV.filter(ghost => (ghost[0] === this.state.heroXy[0]) && (ghost[1] === this.state.heroXy[1]))
     if (ghostCheckH.length || ghostCheckV.length) {
       console.log("ghost got ya")
-      this.postScore(this.state.score)
-      this.setState({
-        heroXy: gameMap.heroXy,
-        score: 0,
-        coins: gameMap.coins,
-      });
+      this.endGame()
     }
 
-    animationFrameLUL = requestAnimationFrame(() => {this.update()})
-    animationFrameLUL
+    animationFrameLUL = window.requestAnimationFrame(this.update)
   }
 
   componentWillUnmount(){
+    console.log("unmount");
     window.cancelAnimationFrame(animationFrameLUL)
+    console.log('2nd unmount');
     window.removeEventListener('keydown', this.moveHero)
+    console.log('3nd unmount');
   }
 
   render () {
@@ -416,15 +427,15 @@ class Game extends React.Component {
 
         </canvas>
         <div className="imgHider">
-          <img id="dirt" src={require('./assets/dirt-tile.png')}/>
-          <img id="grass" src={require('./assets/grass-tile.png')}/>
-          <img id="path" src={require('./assets/path-tile.png')}/>
-          <img id="exit" src={require('./assets/grass-tile-exit.png')}/>
-          <img id="character" src={require('./assets/character-tile.png')}/>
-          <img id="coin" src={require('./assets/coin-tile.png')}/>
-          <img id="rock" src={require('./assets/rock-tile.png')}/>
-          <img id="ghost" src={require('./assets/ghost-tile.png')}/>
-          <img id="winner" src={require('./assets/Winner.png')}/>
+          <img id="dirt" src={require('./assets/dirt-tile.png')} alt="idk"/>
+          <img id="grass" src={require('./assets/grass-tile.png')} alt="idk"/>
+          <img id="path" src={require('./assets/path-tile.png')} alt="idk"/>
+          <img id="exit" src={require('./assets/grass-tile-exit.png')} alt="idk"/>
+          <img id="character" src={require('./assets/character-tile.png')} alt="idk"/>
+          <img id="coin" src={require('./assets/coin-tile.png')} alt="idk"/>
+          <img id="rock" src={require('./assets/rock-tile.png')} alt="idk"/>
+          <img id="ghost" src={require('./assets/ghost-tile.png')} alt="idk"/>
+          <img id="winner" src={require('./assets/Winner.png')} alt="idk"/>
         </div>
       </div>
     )
