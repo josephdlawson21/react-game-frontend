@@ -1,5 +1,4 @@
 import React from 'react'
-import PropTypes from 'prop-types'
 const LOGIN = "http://localhost:3000/login"
 const CREATE = "http://localhost:3000/users"
 
@@ -79,13 +78,13 @@ class LogIn extends React.Component {
           <div className="row">
             <div className="input-field col s6">
               <input placeholder="Username" id="Username" type="text" className="validate" onChange={this.updateUsername} />
-              <label for="Username">Username</label>
+              <label htmlFor="Username">Username</label>
             </div>
           </div>
           <div className="row">
             <div className="input-field col s6">
               <input id="Password" type="password" className="validate" onChange={this.updatePassword} />
-              <label for="Password">Password</label>
+              <label htmlFor="Password">Password</label>
             </div>
           </div>
           <div className="row">

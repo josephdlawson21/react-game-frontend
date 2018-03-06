@@ -1,9 +1,10 @@
 import React from 'react'
-import PropTypes from 'prop-types'
 import Game from './components/Game'
 import NavBar from './components/NavBar'
 import LogIn from './components/LogIn'
 import {Switch, Route} from 'react-router-dom'
+import About from './components/About'
+import Leaderboard from './components/Leaderboard'
 
 class App extends React.Component {
   state = {
@@ -23,6 +24,8 @@ class App extends React.Component {
       })
     }
   }
+
+
 
   login = (j) => {
     localStorage.setItem('token', j.token)
@@ -51,6 +54,8 @@ class App extends React.Component {
       <div>
         <NavBar logOutFunc={this.logout}/>
         <Switch>
+          <Route path='/about' render={() => <About/>}/>
+          <Route path='/leaderboard' render={() => <Leaderboard/>}/>
           <Route path='/' render={() => {
             return this.state.auth.loggedIn ? <Game/> : <LogIn loginFunc={this.login} logoutFunc={this.logout} auth={this.state.auth} />}
           }></Route>

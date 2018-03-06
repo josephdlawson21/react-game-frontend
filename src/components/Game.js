@@ -116,6 +116,7 @@ class Game extends React.Component {
       return true
     } else if (ghostCheckH.length || ghostCheckV.length) {
       console.log("ded");
+      this.postScore(this.state.score)
       this.setState({
         heroXy: [0,9],
         score: 0,
@@ -124,6 +125,19 @@ class Game extends React.Component {
     }else {
       return true
     };
+  }
+
+  postScore = (score) => {
+    fetch('http://localhost:3000/scores', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': localStorage.token
+      },
+      body: JSON.stringify({
+        score: score
+      })
+    })
   }
 
   moveHero = (event) => {
@@ -378,6 +392,7 @@ class Game extends React.Component {
     let ghostCheckV = this.state.ghostsV.filter(ghost => (ghost[0] === this.state.heroXy[0]) && (ghost[1] === this.state.heroXy[1]))
     if (ghostCheckH.length || ghostCheckV.length) {
       console.log("ghost got ya")
+      this.postScore(this.state.score)
       this.setState({
         heroXy: [0,9],
         score: 0,
@@ -391,6 +406,7 @@ class Game extends React.Component {
 
   componentWillUnmount(){
     window.cancelAnimationFrame(animationFrameLUL)
+    window.removeEventListener('keydown', this.moveHero)
   }
 
   render () {
