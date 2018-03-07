@@ -245,17 +245,18 @@ class Game extends React.Component {
     console.log("update");
     /////////////////////////create map /////////////////////////
     let dirt = document.getElementById('dirt');
-    let path = document.getElementById('path');
-    let grass = document.getElementById('grass');
-    let rock = document.getElementById('rock');
-    let winner = document.getElementById('winner');
-    let ctx = document.getElementById('canvas').getContext('2d')
+    if (dirt) {
+      let path = document.getElementById('path');
+      let grass = document.getElementById('grass');
+      let rock = document.getElementById('rock');
+      let winner = document.getElementById('winner');
+      let ctx = document.getElementById('canvas').getContext('2d')
 
-    for (var c = 0; c < this.state.map.cols; c++) {
-      for (var r = 0; r < this.state.map.rows; r++) {
-        var tile = this.state.map.getTile(c, r);
-        switch (tile) {
-          case 1:
+      for (var c = 0; c < this.state.map.cols; c++) {
+        for (var r = 0; r < this.state.map.rows; r++) {
+          var tile = this.state.map.getTile(c, r);
+          switch (tile) {
+            case 1:
             ctx.drawImage(
               grass, // image
               0, // source x
@@ -268,7 +269,7 @@ class Game extends React.Component {
               this.state.map.tsize // target height
             );
             break;
-          case 2:
+            case 2:
             ctx.drawImage(
               dirt, // image
               0, // source x
@@ -281,7 +282,7 @@ class Game extends React.Component {
               this.state.map.tsize // target height
             );
             break;
-          case 3:
+            case 3:
             ctx.drawImage(
               grass, // image
               0, // source x
@@ -305,7 +306,7 @@ class Game extends React.Component {
               this.state.map.tsize // target height
             );
             break;
-          case 4:
+            case 4:
             ctx.drawImage(
               dirt, // image
               0, // source x
@@ -340,7 +341,7 @@ class Game extends React.Component {
             //   (r * this.state.map.tsize) + 10, // target y
             // );
             break;
-          case 5:
+            case 5:
             ctx.drawImage(
               grass, // image
               0, // source x
@@ -366,49 +367,53 @@ class Game extends React.Component {
 
             break;
             case 6:
-              ctx.drawImage(
-                path, // image
-                0, // source x
-                0, // source y
-                this.state.map.tsize, // source width
-                this.state.map.tsize, // source height
-                c * this.state.map.tsize, // target x
-                r * this.state.map.tsize, // target y
-                this.state.map.tsize, // target width
-                this.state.map.tsize // target height
-              );
-              break;
-              default:
+            ctx.drawImage(
+              path, // image
+              0, // source x
+              0, // source y
+              this.state.map.tsize, // source width
+              this.state.map.tsize, // source height
+              c * this.state.map.tsize, // target x
+              r * this.state.map.tsize, // target y
+              this.state.map.tsize, // target width
+              this.state.map.tsize // target height
+            );
+            break;
+            default:
+          }
+
         }
-
       }
+      /////////////////////////////////create coins //////////////////////////
+
+      this.state.coins.forEach((coin)=> Coin(coin[0], coin[1], ctx, this.state.map))
+
+      ////////////////////////////////// create Hero //////////////////////
+      Hero(this.state.map, this.state.heroXy, ctx)
+
+
+      ////////////////////////////////// Make Enemy /////////////////////////
+      this.state.ghostsH.forEach((ghost) => {
+        Enemy(this.state.map, ghost, ctx)
+      })
+
+      this.state.ghostsV.forEach((ghost) => {
+        Enemy(this.state.map, ghost, ctx)
+      })
+
+      //////////// check for ghost impact
+      let ghostCheckH = this.state.ghostsH.filter(ghost => (ghost[0] === this.state.heroXy[0]) && (ghost[1] === this.state.heroXy[1]))
+      let ghostCheckV = this.state.ghostsV.filter(ghost => (ghost[0] === this.state.heroXy[0]) && (ghost[1] === this.state.heroXy[1]))
+      if (ghostCheckH.length || ghostCheckV.length) {
+        console.log("ghost got ya")
+        this.endGame()
+      }
+
+      animationFrameLUL = window.requestAnimationFrame(this.update)
+
+    } else {
+
     }
-    /////////////////////////////////create coins //////////////////////////
-
-    this.state.coins.forEach((coin)=> Coin(coin[0], coin[1], ctx, this.state.map))
-
-    ////////////////////////////////// create Hero //////////////////////
-    Hero(this.state.map, this.state.heroXy, ctx)
-
-
-    ////////////////////////////////// Make Enemy /////////////////////////
-    this.state.ghostsH.forEach((ghost) => {
-      Enemy(this.state.map, ghost, ctx)
-    })
-
-    this.state.ghostsV.forEach((ghost) => {
-      Enemy(this.state.map, ghost, ctx)
-    })
-
-    //////////// check for ghost impact
-    let ghostCheckH = this.state.ghostsH.filter(ghost => (ghost[0] === this.state.heroXy[0]) && (ghost[1] === this.state.heroXy[1]))
-    let ghostCheckV = this.state.ghostsV.filter(ghost => (ghost[0] === this.state.heroXy[0]) && (ghost[1] === this.state.heroXy[1]))
-    if (ghostCheckH.length || ghostCheckV.length) {
-      console.log("ghost got ya")
-      this.endGame()
-    }
-
-    animationFrameLUL = window.requestAnimationFrame(this.update)
   }
 
   componentWillUnmount(){
