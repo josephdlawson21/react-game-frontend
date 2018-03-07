@@ -133,27 +133,22 @@ class Game extends React.Component {
 
 
   newGame = () => {
-    console.log("completed map");
     intervals.forEach((int) => {
       clearInterval(int)
     })
-    console.log("intervals finished clearing");
     window.cancelAnimationFrame(animationFrameLUL)
     window.removeEventListener('keydown', this.moveHero)
     this.startGame()
   }
 
   endGame = () => {
-    console.log("killed");
     this.postScore(this.state.score)
     this.setState({
       score: 0
     });
     intervals.forEach((int) => {
-      console.log("hello");
       clearInterval(int)
     })
-    console.log("intervals cleared");
     window.cancelAnimationFrame(animationFrameLUL)
     window.removeEventListener('keydown', this.moveHero)
     this.startGame()
@@ -211,7 +206,6 @@ class Game extends React.Component {
   }
 
   startGame = () => {
-    console.log("startGame");
     let id = Math.floor(Math.random() * Maps.maps.length)
     gameMap = Maps.maps[id]
     gameMap['getTile'] = function(col, row) {
@@ -237,12 +231,10 @@ class Game extends React.Component {
   }
 
   componentDidMount() {
-    console.log("mount");
     this.startGame()
   }
 
   update = () => {
-    console.log("update");
     /////////////////////////create map /////////////////////////
     let dirt = document.getElementById('dirt');
     if (dirt) {
@@ -417,11 +409,8 @@ class Game extends React.Component {
   }
 
   componentWillUnmount(){
-    console.log("unmount");
     window.cancelAnimationFrame(animationFrameLUL)
-    console.log('2nd unmount');
     window.removeEventListener('keydown', this.moveHero)
-    console.log('3nd unmount');
   }
 
   render () {

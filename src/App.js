@@ -2,7 +2,7 @@ import React from 'react'
 import Game from './components/Game'
 import NavBar from './components/NavBar'
 import LogIn from './components/LogIn'
-import {Switch, Route, Redirect} from 'react-router-dom'
+import {Switch, Route} from 'react-router-dom'
 import About from './components/About'
 import Leaderboard from './components/Leaderboard'
 
