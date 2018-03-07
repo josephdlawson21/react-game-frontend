@@ -131,7 +131,6 @@ class Game extends React.Component {
     })
   }
 
-
   newGame = () => {
     intervals.forEach((int) => {
       clearInterval(int)
@@ -214,7 +213,6 @@ class Game extends React.Component {
 
     window.addEventListener('keydown', this.moveHero)
 
-
     this.setState({
       map: gameMap,
       heroXy: [gameMap.start[0], gameMap.start[1]],
@@ -238,7 +236,6 @@ class Game extends React.Component {
     /////////////////////////create map /////////////////////////
     let dirt = document.getElementById('dirt');
     if (dirt) {
-      let path = document.getElementById('path');
       let grass = document.getElementById('grass');
       let rock = document.getElementById('rock');
       let winner = document.getElementById('winner');
@@ -321,17 +318,6 @@ class Game extends React.Component {
               this.state.map.tsize, // target width
               this.state.map.tsize // target height
             );
-
-            // ctx.drawImage(
-            //   dirt, // image
-            //   c * this.state.map.tsize, // target x
-            //   r * this.state.map.tsize, // target y
-            // );
-            // ctx.drawImage(
-            //   rock, // image
-            //   (c * this.state.map.tsize) + 10, // target x
-            //   (r * this.state.map.tsize) + 10, // target y
-            // );
             break;
             case 5:
             ctx.drawImage(
@@ -357,19 +343,6 @@ class Game extends React.Component {
               this.state.map.tsize // target height
             );
 
-            break;
-            case 6:
-            ctx.drawImage(
-              path, // image
-              0, // source x
-              0, // source y
-              this.state.map.tsize, // source width
-              this.state.map.tsize, // source height
-              c * this.state.map.tsize, // target x
-              r * this.state.map.tsize, // target y
-              this.state.map.tsize, // target width
-              this.state.map.tsize // target height
-            );
             break;
             default:
           }
@@ -423,7 +396,6 @@ class Game extends React.Component {
         <div className="imgHider">
           <img id="dirt" src={require('./assets/dirt-tile.png')} alt="idk"/>
           <img id="grass" src={require('./assets/grass-tile.png')} alt="idk"/>
-          <img id="path" src={require('./assets/path-tile.png')} alt="idk"/>
           <img id="exit" src={require('./assets/grass-tile-exit.png')} alt="idk"/>
           <img id="character" src={require('./assets/character-tile.png')} alt="idk"/>
           <img id="coin" src={require('./assets/coin-tile.png')} alt="idk"/>
@@ -435,6 +407,5 @@ class Game extends React.Component {
     )
   }
 }
-
 
 export default Game;
