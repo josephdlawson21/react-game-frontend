@@ -2,6 +2,7 @@
   "name": "react-game-frontend",
   "version": "0.1.0",
   "private": true,
+  "homepage" : "https://josephdlawson21.github.io/react-game-frontend/",
   "dependencies": {
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
